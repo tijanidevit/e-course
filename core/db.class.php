@@ -1,7 +1,7 @@
 <?php
     class DB {
         public $host = 'localhost';
-        public $dbname = 'gogi_assignment';
+        public $dbname = 'ecour';
         public $password = '';
         public $username = 'root';
         

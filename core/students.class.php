@@ -3,21 +3,20 @@
 
     class Students extends DB{
 
-        function register($matric_no,$fullname,$image,$email,$password){
-            return DB::execute("INSERT INTO students(matric_no,fullname,image,email,password) VALUES(?,?,?,?,?)", [$matric_no,$fullname,$image,$email,$password]);
+        function register($fullname,$gender,$picture,$email,$password){
+            return DB::execute("INSERT INTO students(fullname,gender,picture,email,password) VALUES(?,?,?,?,?)", [$fullname,$gender,$picture,$email,$password]);
         }
         
         function fetch_students(){
             return DB::fetchAll("SELECT * FROM students ORDER BY fullname ASC",[]);
         }
+        
         function fetch_student($email){
             return DB::fetch("SELECT * FROM students WHERE email = ? OR id = ?",[$email,$email] );
         }
-        function fetch_student_rating($id){
-            return DB::fetch("SELECT student_rating FROM students WHERE id = ? ",[$id] );
-        }
-        function update_student($matric_no,$fullname,$image,$email,$id){
-            return DB::execute("UPDATE students SET matric_no =?, fullname =?, image =?, email =?, password =? WHERE id = ? ", [$matric_no,$fullname,$image,$email,$id]);
+
+        function update_student($fullname,$gender,$picture,$email,$id){
+            return DB::execute("UPDATE students SET fullname =?, gender =?, picture =?, email =?, password =? WHERE id = ? ", [$fullname,$gender,$picture,$email,$id]);
         }
         function update_password($password,$id){
             return DB::execute("UPDATE students SET password =? WHERE id = ? ", [$password,$id]);
