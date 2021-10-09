@@ -2,6 +2,7 @@
 session_start();    
 if (isset($_SESSION['ecour_student'])) {
   header('location: account');
+  exit();
 }
 ?>
 <!DOCTYPE html>
@@ -53,6 +54,7 @@ if (isset($_SESSION['ecour_student'])) {
 
                         <div class="login-body">
                             <form class="form-wrap" method="POST" id="registerForm" enctype="multipart/form-data">
+                                <div id="result"></div>
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <div class="form-group">
@@ -82,7 +84,7 @@ if (isset($_SESSION['ecour_student'])) {
                                     <div class="col-lg-12 mt-3">
                                         <div class="form-group">
                                             <label for="pwd">Password</label>
-                                            <input id="pwd" name="pwd" type="password" placeholder="Password">
+                                            <input id="pwd" name="password" type="password" placeholder="Password">
                                         </div>
                                     </div>
 
@@ -102,7 +104,7 @@ if (isset($_SESSION['ecour_student'])) {
                                                     <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
                                                 </span>
                                                 <span class="btnText">
-                                                    Sign In
+                                                    Sign Up
                                                 </span>
                                             </button>
                                         </div>
@@ -134,12 +136,14 @@ if (isset($_SESSION['ecour_student'])) {
 
 <script>
     
-    $('#loginForm').submit(function(e){
+    $('#registerForm').submit(function(e){
         e.preventDefault();
         $.ajax({
             url:'ajax/register.php',
             type: 'POST',
-            data : $(this).serialize(),
+            data : new FormData(this),
+            contentType: false,
+            processData: false,
             cache: false,
             beforeSend: function() {
                 $('#spinner').show();

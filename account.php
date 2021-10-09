@@ -1,3 +1,21 @@
+<?php 
+session_start();    
+if (!isset($_SESSION['ecour_student'])) {
+  header('location: ./');
+  exit();
+}
+
+$student = $_SESSION['ecour_student'];
+$student_id = $student['id'];
+
+include_once 'core/students.class.php';
+
+$student_obj = new Students();
+
+$enrolled_courses = $student_obj->fetch_enrolled_courses($student_id);
+$completed_courses = $student_obj->fetch_completed_courses($student_id);
+
+?>
 <!DOCTYPE html>
 <html lang="zxx">
 
