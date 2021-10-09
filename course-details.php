@@ -1,3 +1,20 @@
+<?php 
+session_start();    
+if (!isset($_SESSION['ecour_student'])) {
+  header('location: ./');
+  exit();
+}
+
+$student = $_SESSION['ecour_student'];
+$student_id = $_GET['course'];
+
+include_once 'core/courses.class.php';
+
+$course_obj = new Courses();
+
+$enrolled_courses = $course_obj->fetch_course($course_id);
+
+?>
 <!DOCTYPE html>
 <html lang="zxx">
 
