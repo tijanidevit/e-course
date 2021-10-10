@@ -102,5 +102,12 @@
         function course_enrollments_num($course_id){
             return DB::num_row("SELECT id FROM course_enrollments WHERE course_id = ?",[$course_id]);
         }
+
+
+
+        function fetch_course_exam($course_id){
+            return DB::fetch("SELECT * FROM exams WHERE course_id = ? ORDER BY id DESC LIMIT 1",[$course_id]);
+        }
+    
     }
 ?>

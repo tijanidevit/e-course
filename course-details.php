@@ -153,7 +153,7 @@ if (empty($course)) {
                                                         <div class="accordion-body  lecture-accordion">
                                                             <div class="lecture-item">
                                                                 <div class="lecture-name">
-                                                                    <a href="assessment">
+                                                                    <a href="assessment?id=<?php echo $course_id ?>">
                                                                         <p><i class="las la-file-alt"></i>Final Assesment</p>
                                                                     </a>
                                                                 </div>

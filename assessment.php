@@ -1,3 +1,34 @@
+<?php 
+session_start();    
+if (!isset($_SESSION['ecour_student'])) {
+  header('location: ./');
+  exit();
+}
+    
+if (!isset($_GET['id'])) {
+  header('location: courses');
+  exit();
+}
+
+$student = $_SESSION['ecour_student'];
+$student_id = $student['id'];
+$course_id = $_GET['id'];
+
+include_once 'core/courses.class.php';
+include_once 'core/exams.class.php';
+include_once 'core/core.function.php';
+
+$course_obj = new Courses();
+$exam_obj = new Exams();
+
+$course = $course_obj->fetch_course($course_id);
+$exam = $course_obj->fetch_course_exam($course_id);
+
+$exam_id = $exam['id'];
+
+$exam_questions = $exam_obj->fetch_exam_questions($exam_id);
+
+?>
 <!DOCTYPE html>
 <html lang="zxx">
 
@@ -30,8 +61,8 @@
                             <h2>Course Assessment</h2>
                             <ul class="breadcrumb-menu">
                                 <li><a href="./">Home </a></li>
-                                <li><a href="./courses">Course </a></li>
-                                <li>Course Assessment</li>
+                                <li><a href="./course-details?course=<?php echo $course_id ?>"><?php echo $course['course_title'] ?> </a></li>
+                                <li><?php echo $exam['title'] ?></li>
                             </ul>
                         </div>
                     </div>
@@ -44,37 +75,24 @@
             <div class="container">
 
                 <div class="tab-content course-tab-content">
-                    <form action="certificate" method="post">
-                        <div class="form-group">
-                            <label for="">1. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolorum cupiditate</label>
-                            <select name="" id="" class="form-control">
-                                <option value="">Select</option>
-                                <option value="1">Option One</option>
-                                <option value="1">Option One</option>
-                                <option value="1">Option One</option>
-                                <option value="1">Option One</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="">2. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolorum cupiditate</label>
-                            <select name="" id="" class="form-control">
-                                <option value="">Select</option>
-                                <option value="1">Option One</option>
-                                <option value="1">Option One</option>
-                                <option value="1">Option One</option>
-                                <option value="1">Option One</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="">3. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolorum cupiditate</label>
-                            <select name="" id="" class="form-control">
-                                <option value="">Select</option>
-                                <option value="1">Option One</option>
-                                <option value="1">Option One</option>
-                                <option value="1">Option One</option>
-                                <option value="1">Option One</option>
-                            </select>
-                        </div>
+                    <form id="examForm" method="post">
+                        
+                        <?php $sn = 1; foreach ($exam_questions as $question): $question_id = $question['id']; ?>
+                            <div class="form-group">
+                                <label for=""> <?php echo $sn++ .'. '. $question['question'] ?></label>
+                                <select name="q<?php echo $question_id ?>" id="" class="form-control">
+                                    <option disabled selected>Select</option>
+                                    <?php                                        
+                                        $question_options = $exam_obj->fetch_question_options($question_id);
+                                        foreach ($question_options as $option): 
+                                    ?>
+                                        <option value="<?php echo $option['is_answer'] ?>"><?php echo $option['option'] ?></option>
+                                    <?php endforeach ?>
+                                    
+                                </select>
+                            </div>
+                        <?php endforeach ?>
+
                         <div class="text-center">
                             <button class="btn v1" type="submit">Submit</button>
                         </div>

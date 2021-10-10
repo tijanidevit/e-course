@@ -1,3 +1,10 @@
+<?php 
+session_start();    
+if (isset($_SESSION['ecour_student'])) {
+  header('location: ./account');
+  exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="zxx">
 
