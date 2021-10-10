@@ -79,5 +79,47 @@
         }
 
 
+
+
+        ###### student's course_enrollments
+        function student_certificates_num($student_id){
+            return DB::num_row("SELECT id FROM certificates WHERE student_id = ? ",[$student_id]);
+        }
+
+        function check_student_certificate($student_id,$course_id){
+            return DB::num_row("SELECT id FROM certificates WHERE student_id = ? AND course_id = ? ",[$student_id,$course_id]);
+        }
+
+        function save_certificate($student_id,$course_id){
+            return DB::execute("INSERT INTO certificates (course_id,student_id) VALUES (?,?) ",[$student_id,$course_id]);
+        }
+
+        function fetch_student_certificates($student_id){
+            return DB::fetchAll("SELECT *,certificates.id FROM certificates
+            JOIN courses on courses.id = certificates.course_id
+            WHERE student_id = ?
+            ORDER BY certificates.id DESC ",[$student_id]);
+        }
+
+        function fetch_limited_student_certificates($student_id){
+            return DB::fetchAll("SELECT *,certificates.id FROM certificates
+            JOIN courses on courses.id = certificates.course_id
+            WHERE student_id = ?
+            ORDER BY certificates.id DESC ",[$student_id]);
+        }
+
+        function save_exam($student_id,$course_id,$score){
+            return DB::execute("INSERT INTO student_exams (student_id,course_id,score) VALUES (?,?,?) ",[$student_id,$course_id,$score]);
+        }
+
+        function fetch_student_exams($student_id){
+            return DB::fetchAll("SELECT *,student_exams.id FROM student_exams
+            JOIN courses on courses.id = student_exams.course_id
+            WHERE student_id = ?
+            ORDER BY student_exams.id DESC ",[$student_id]);
+        }
+
+
+
     }
 ?>

@@ -8,10 +8,14 @@ $session = new Session();
 $student_obj = new students();
 $exam_obj = new exams();
 
+$student = $_SESSION['ecour_student'];
+$student_id = $student['id'];
+
 if (isset($_POST['q0'])) {
 	$q0 = $_POST['q0'];
 
 	$total_questions = $_POST['total_questions'];
+	$course_id = $_POST['course_id'];
 
 	$score = 0;
 
@@ -21,32 +25,29 @@ if (isset($_POST['q0'])) {
 		}
 	}
 
-	echo $score .'<br />';
+	$needed_score =  ((70/100) * $total_questions+1);
 
-	$needed_score = floor((70/100) * $total_questions+1);
+	$student_obj->save_exam($student_id,$course_id,$score);
 
-	echo $needed_score;
+	if (!$student_obj->check_student_certificate($student_id,$course_id)) {
+		if ($score >= $needed_score) {
+			$student_obj->save_certificate($student_id,$course_id);
 
-	if ($score >= $needed_score) {
-		
+			$message = displaySuccess('You scored '.$score.' and have successfully passed the assessment. Your certificate will be loaded soon');
+			$status = true;
+			
+		}
+		else{
+			$message = displaySuccess('You scored '.$score.' and will need to score '.ceil($needed_score).' to pass this course');
+			$status = true;
+		}		
+	}
+	else{
+		$message = displayWarning('You scored '.$score.'. You have already passed this course');
+		$status = false;
 	}
 
-
-	// $password = md5($_POST['password']);
-
-	// if ($student_obj->check_q0_existence($q0)) {
-	// 	if ($student_obj->login($q0,$password)) {
-	// 		$student = $student_obj->fetch_student($q0);
-	// 		$session->create_session('ecour_student',$student);
-	// 		echo 1;
-	// 	}
-	// 	else{
-	// 		echo displayWarning('Invalid Password');
-	// 	}
-	// }
-	// else{
-	// 	echo displayWarning('q0 address not recognised');
-	// }
+	echo $message;
 }
 
 else{

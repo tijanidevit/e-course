@@ -76,11 +76,12 @@ $exam_questions = $exam_obj->fetch_exam_questions($exam_id);
 
                 <div class="tab-content course-tab-content">
                     <form id="examForm" method="post">
-                        
+                        <div id="result"></div>
                         <?php foreach ($exam_questions as $index => $question): $question_id = $question['id']; ?>
                             <div class="form-group">
                                 <label for=""> <?php echo $index + 1 .'. '. $question['question'] ?></label>
                                 <input type="hidden" name="total_questions" value="<?php echo $index?>">
+                                <input type="hidden" name="course_id" value="<?php echo $course_id?>">
                                 <select required name="q<?php echo $index?>" id="" class="form-control">
                                     <option disabled >Select</option>
                                     <?php                                        
@@ -128,14 +129,13 @@ $exam_questions = $exam_obj->fetch_exam_questions($exam_id);
                 $('#btnText').hide();
             },
             success: function(data){
-                if (data == 1) {
-                    location.href = 'account';
-                }
-                else{
-                    $('#result').html(data);
-                    $('#result').fadeIn();
-                    $('#spinner').hide();
-                    $('#btnText').show();
+                $('#result').html(data);
+                $('#result').fadeIn();
+                $('#spinner').hide();
+                $('#btnText').show();
+
+                if (data.includes('successfully')) {
+                    location.href = 'certificate?id=<?php echo $course_id ?>';
                 }
                 console.log(data);
             }
