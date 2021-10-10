@@ -91,18 +91,24 @@
         }
 
         function save_certificate($student_id,$course_id){
-            return DB::execute("INSERT INTO certificates (course_id,student_id) VALUES (?,?) ",[$student_id,$course_id]);
+            return DB::execute("INSERT INTO certificates (student_id,course_id) VALUES (?,?) ",[$student_id,$course_id]);
         }
 
         function fetch_student_certificates($student_id){
-            return DB::fetchAll("SELECT *,certificates.id FROM certificates
+            return DB::fetchAll("SELECT *,certificates.id, certificates.created_at FROM certificates
             JOIN courses on courses.id = certificates.course_id
             WHERE student_id = ?
             ORDER BY certificates.id DESC ",[$student_id]);
         }
 
+        function fetch_student_course_certificates($student_id,$course_id){
+            return DB::fetch("SELECT *,certificates.id, certificates.created_at FROM certificates
+            WHERE student_id = ? AND course_id = ?
+            ORDER BY certificates.id DESC ",[$student_id,$course_id]);
+        }
+
         function fetch_limited_student_certificates($student_id){
-            return DB::fetchAll("SELECT *,certificates.id FROM certificates
+            return DB::fetchAll("SELECT *,certificates.id, certificates.created_at FROM certificates
             JOIN courses on courses.id = certificates.course_id
             WHERE student_id = ?
             ORDER BY certificates.id DESC ",[$student_id]);

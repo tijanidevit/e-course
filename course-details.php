@@ -16,7 +16,9 @@ $course_id = $_GET['course'];
 
 include_once 'core/courses.class.php';
 include_once 'core/core.function.php';
+include_once 'core/students.class.php';
 
+$student_obj = new students();
 $course_obj = new Courses();
 
 $course = $course_obj->fetch_course($course_id);
@@ -24,6 +26,8 @@ $course_sections = $course_obj->fetch_course_sections($course_id);
 $course_enrollments_num = $course_obj->course_enrollments_num($course_id);
 
 $check_enrollment = $course_obj->check_course_enrollment($course_id,$student_id);
+
+$check_completion = $student_obj->check_student_certificate($student_id,$course_id);
 
 $notFound = false;
 if (empty($course)) {
@@ -226,6 +230,12 @@ if (empty($course)) {
                             <?php if (! $check_enrollment): ?>
                                 <div class="course-enroll-widget sidebar-box">
                                     <a href="enroll?course=<?php echo $course_id ?>" class="btn v3">Enroll</a>
+                                </div>
+                            <?php endif ?>
+
+                            <?php if ($check_completion): ?>
+                                <div class="course-enroll-widget sidebar-box">
+                                    <a href="certificate?id=<?php echo $course_id ?>" class="btn v3">View Certificate</a>
                                 </div>
                             <?php endif ?>
                             

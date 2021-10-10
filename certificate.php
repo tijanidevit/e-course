@@ -1,5 +1,45 @@
-<?php $fullname = "Adewale Abati";
-$course_name = "Internet"; ?>
+<?php 
+session_start();    
+if (!isset($_SESSION['ecour_student'])) {
+  header('location: ./');
+  exit();
+}
+    
+if (!isset($_GET['id'])) {
+  header('location: courses');
+  exit();
+}
+
+$student = $_SESSION['ecour_student'];
+$student_id = $student['id'];
+$course_id = $_GET['id'];
+
+include_once 'core/courses.class.php';
+include_once 'core/exams.class.php';
+include_once 'core/students.class.php';
+include_once 'core/core.function.php';
+
+$course_obj = new Courses();
+$exam_obj = new Exams();
+$student_obj = new Students();
+
+$course = $course_obj->fetch_course($course_id);
+
+$certificate = $student_obj->fetch_student_course_certificates($student_id,$course_id);
+
+
+if (! empty($certificate)) {
+    $fullname = $student['fullname'];
+    $course_name = $course['course_title'];
+    $date = $certificate['created_at'];
+}
+else{    
+    $fullname = 'UNKNOWN';
+    $course_name = 'UNKNOWN';
+    $date = 'UNKNOWN';
+}
+?>
+
 <!DOCTYPE html>
 <html lang="zxx">
 
@@ -143,7 +183,7 @@ $course_name = "Internet"; ?>
                             <div id="course-description">
                                 Lorem ipsum dolor sit amet consectetur, adipisicing elit. Consectetur minima voluptatibus, cumque culpa tempora nesciunt laborum corrupti perferendis nobis aspernatur? Ex officiis sint inventore, placeat earum a consequuntur ullam incidunt.
                             </div>
-                            <div id="issued-date" class="open-sans">27/04/2021</div>
+                            <div id="issued-date" class="open-sans"><?php echo format_date($date) ?></div>
                         </div>
                     </div>
                 </div>
