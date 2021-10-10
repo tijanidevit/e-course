@@ -75,6 +75,10 @@
             return DB::fetchAll("SELECT * FROM course_materials WHERE section_id = ?",[$section_id]);
         }
 
+        function fetch_course_material($id){
+            return DB::fetch("SELECT * FROM course_materials WHERE id = ?",[$id]);
+        }
+
 
 
 
