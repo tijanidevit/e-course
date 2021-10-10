@@ -7,13 +7,17 @@
             return DB::execute("INSERT INTO courses(course) VALUES(?)", [$course]);
         }
         function fetch_courses(){
-            return DB::fetchAll("SELECT * FROM courses ORDER BY course_code ",[]);
+            return DB::fetchAll("SELECT * FROM courses 
+            JOIN tutors on tutors.id = courses.tutor_id
+            ORDER BY course_title ",[]);
         }
         function fetch_limited_courses($limit){
-            return DB::fetchAll("SELECT * FROM courses ORDER BY course_code LIMIT $limit ",[]);
+            return DB::fetchAll("SELECT * FROM courses ORDER BY course_title LIMIT $limit ",[]);
         }
         function fetch_course($id){
-            return DB::fetch("SELECT * FROM courses WHERE id = ? ",[$id] );
+            return DB::fetch("SELECT * FROM courses 
+            JOIN tutors on tutors.id = courses.tutor_id
+            WHERE id = ? ",[$id] );
         }
         function delete_course($id){
             return DB::execute("DELETE FROM courses WHERE id = ? ",[$id] );
@@ -45,15 +49,12 @@
         }
 
 
-        function fetch_course_assignments($course_id){
-            return DB::fetchAll("SELECT *,assignments.id FROM assignments
-            JOIN courses on courses.id = assignments.course_id
-            WHERE assignments.course_id = ? 
-            ORDER BY assignments.id DESC ",[$course_id]);
+        function fetch_course_materials($course_id){
+            return DB::fetchAll("SELECT * FROM course_materials WHERE course_id = ? ORDER BY id DESC ",[$course_id]);
         }
 
-        function course_assignments_num($course_id){
-            return DB::num_row("SELECT assignments.id FROM assignments WHERE assignments.course_id = ?",[$course_id]);
+        function course_materials_num($course_id){
+            return DB::num_row("SELECT id FROM course_materials WHERE course_id = ?",[$course_id]);
         }
     }
 ?>
