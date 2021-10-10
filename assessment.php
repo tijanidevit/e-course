@@ -77,11 +77,12 @@ $exam_questions = $exam_obj->fetch_exam_questions($exam_id);
                 <div class="tab-content course-tab-content">
                     <form id="examForm" method="post">
                         
-                        <?php $sn = 1; foreach ($exam_questions as $question): $question_id = $question['id']; ?>
+                        <?php foreach ($exam_questions as $index => $question): $question_id = $question['id']; ?>
                             <div class="form-group">
-                                <label for=""> <?php echo $sn++ .'. '. $question['question'] ?></label>
-                                <select name="q<?php echo $question_id ?>" id="" class="form-control">
-                                    <option disabled selected>Select</option>
+                                <label for=""> <?php echo $index + 1 .'. '. $question['question'] ?></label>
+                                <input type="hidden" name="total_questions" value="<?php echo $index?>">
+                                <select required name="q<?php echo $index?>" id="" class="form-control">
+                                    <option disabled >Select</option>
                                     <?php                                        
                                         $question_options = $exam_obj->fetch_question_options($question_id);
                                         foreach ($question_options as $option): 
@@ -112,3 +113,32 @@ $exam_questions = $exam_obj->fetch_exam_questions($exam_id);
 </body>
 
 </html>
+
+<script>
+     $('#examForm').submit(function(e){
+        e.preventDefault();
+        $.ajax({
+            url:'ajax/grade_exam.php',
+            type: 'POST',
+            data : $(this).serialize(),
+            cache: false,
+            beforeSend: function() {
+                $('#spinner').show();
+                $('#result').hide();
+                $('#btnText').hide();
+            },
+            success: function(data){
+                if (data == 1) {
+                    location.href = 'account';
+                }
+                else{
+                    $('#result').html(data);
+                    $('#result').fadeIn();
+                    $('#spinner').hide();
+                    $('#btnText').show();
+                }
+                console.log(data);
+            }
+        })
+    })
+</script>
