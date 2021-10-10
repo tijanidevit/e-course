@@ -75,6 +75,20 @@
             return DB::fetchAll("SELECT * FROM course_materials WHERE section_id = ?",[$section_id]);
         }
 
+
+
+
+
+
+
+        function enroll_course($course_id,$student_id){
+            return DB::num_row("INSERT INTO course_enrollments (course_id, student_id) VALUES(?,?) ",[$course_id,$student_id]);
+        }
+
+        function check_course_enrollment($course_id,$student_id){
+            return DB::num_row("SELECT id FROM course_enrollments WHERE course_id = ? AND student_id = ? ORDER BY id DESC ",[$course_id,$student_id]);
+        }
+
         function fetch_course_enrollments($course_id){
             return DB::fetchAll("SELECT * FROM course_enrollments WHERE course_id = ? ORDER BY id DESC ",[$course_id]);
         }

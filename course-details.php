@@ -11,6 +11,7 @@ if (!isset($_GET['course'])) {
 }
 
 $student = $_SESSION['ecour_student'];
+$student_id = $student['id'];
 $course_id = $_GET['course'];
 
 include_once 'core/courses.class.php';
@@ -21,6 +22,8 @@ $course_obj = new Courses();
 $course = $course_obj->fetch_course($course_id);
 $course_sections = $course_obj->fetch_course_sections($course_id);
 $course_enrollments_num = $course_obj->course_enrollments_num($course_id);
+
+$check_enrollment = $course_obj->check_course_enrollment($course_id,$student_id);
 
 $notFound = false;
 if (empty($course)) {
@@ -77,6 +80,7 @@ if (empty($course)) {
         <?php if (!$notFound): ?>
             <section class="course-details-wrap ptb-100">
                 <div class="container">
+                    <?php display_flash('response') ?>
                     <div class="row gx-5">
                         <div class="col-lg-8">
                             <div class="course-details">
@@ -111,55 +115,88 @@ if (empty($course)) {
                                             https://www.youtube.com/watch?v=NArVyt8t-z4
                                             https://www.youtube.com/watch?v=A37-3lflh8I
                                             https://www.youtube.com/watch?v=9QIFXyBYJQY -->
+                                            <?php if ($check_enrollment): ?>
+                                                <?php foreach ($course_sections as $section): ?>
+                                                    <div class="accordion-item">
+                                                        <h2 class="accordion-header" id="headingOne">
+                                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<?php echo $section['id'] ?>" aria-expanded="false" aria-controls="collapse<?php echo $section['id'] ?>">
+                                                                <?php echo $section['section'] ?>
+                                                            </button>
+                                                        </h2>
+                                                        <div id="collapse<?php echo $section['id'] ?>" class="accordion-collapse collapse " aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                                            <div class="accordion-body  lecture-accordion">
+                                                                <?php $section_materials = $course_obj->fetch_section_materials($section['id']); foreach ($section_materials as $material): ?>
 
+                                                                    <div class="lecture-item">
+                                                                        <div class="lecture-name">
+                                                                            <a href="lecture?id=<?php echo $material['id'] ?>" target="_blank"><i class="las la-file-alt"></i><?php echo $material['title'] ?></a>
+                                                                        </div>
+                                                                        <div class="lecture-time">
+                                                                            <span>20 min</span>
+                                                                        </div>
+                                                                    </div>
 
-                                            <?php foreach ($course_sections as $section): ?>
+                                                                <?php endforeach ?>
+                                                                                                                            
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                <?php endforeach ?>
+
                                                 <div class="accordion-item">
-                                                    <h2 class="accordion-header" id="headingOne">
-                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<?php echo $section['id'] ?>" aria-expanded="false" aria-controls="collapse<?php echo $section['id'] ?>">
-                                                            <?php echo $section['section'] ?>
+                                                    <h2 class="accordion-header" id="headingThree">
+                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                                            Assessment
                                                         </button>
                                                     </h2>
-                                                    <div id="collapse<?php echo $section['id'] ?>" class="accordion-collapse collapse " aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                                    <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
                                                         <div class="accordion-body  lecture-accordion">
-                                                            <?php $section_materials = $course_obj->fetch_section_materials($section['id']); foreach ($section_materials as $material): ?>
-
-                                                                <div class="lecture-item">
-                                                                    <div class="lecture-name">
-                                                                        <p><i class="las la-file-alt"></i><?php echo $material['title'] ?></p>
-                                                                    </div>
-                                                                    <div class="lecture-time">
-                                                                        <span>20 min</span>
-                                                                    </div>
+                                                            <div class="lecture-item">
+                                                                <div class="lecture-name">
+                                                                    <a href="assessment">
+                                                                        <p><i class="las la-file-alt"></i>Final Assesment</p>
+                                                                    </a>
                                                                 </div>
+                                                                <div class="lecture-time">
+                                                                    <span>20 min</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
 
-                                                            <?php endforeach ?>
-                                                                                                                        
+                                            <?php else: ?>
+
+                                                 <?php foreach ($course_sections as $section): ?>
+                                                    <div class="accordion-item">
+                                                        <h2 class="accordion-header" id="headingOne">
+                                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<?php echo $section['id'] ?>" aria-expanded="false" aria-controls="collapse<?php echo $section['id'] ?>">
+                                                                <?php echo $section['section'] ?>
+                                                            </button>
+                                                        </h2>
+                                                        <div id="collapse<?php echo $section['id'] ?>" class="accordion-collapse collapse " aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                                            <div class="accordion-body  lecture-accordion">
+                                                                <?php $section_materials = $course_obj->fetch_section_materials($section['id']); foreach ($section_materials as $material): ?>
+
+                                                                    <div class="lecture-item">
+                                                                        <div class="lecture-name">
+                                                                            <p><i class="las la-file-alt"></i><?php echo $material['title'] ?></p>
+                                                                        </div>
+                                                                        <div class="lecture-time">
+                                                                            <span>20 min</span>
+                                                                        </div>
+                                                                    </div>
+
+                                                                <?php endforeach ?>
+                                                                                                                            
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            <?php endforeach ?>
-                                            <div class="accordion-item">
-                                                <h2 class="accordion-header" id="headingThree">
-                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                                                        Assessment
-                                                    </button>
-                                                </h2>
-                                                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
-                                                    <div class="accordion-body  lecture-accordion">
-                                                        <div class="lecture-item">
-                                                            <div class="lecture-name">
-                                                                <a href="assessment">
-                                                                    <p><i class="las la-file-alt"></i>Final Assesment</p>
-                                                                </a>
-                                                            </div>
-                                                            <div class="lecture-time">
-                                                                <span>20 min</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                                <?php endforeach ?>
+
+                                            <?php endif ?>
+
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -186,9 +223,12 @@ if (empty($course)) {
                                     </li>
                                 </ul>
                             </div>
-                            <div class="course-enroll-widget sidebar-box">
-                                <a href="enroll?course=<?php echo $course_id ?>" class="btn v3">Enroll</a>
-                            </div>
+                            <?php if (! $check_enrollment): ?>
+                                <div class="course-enroll-widget sidebar-box">
+                                    <a href="enroll?course=<?php echo $course_id ?>" class="btn v3">Enroll</a>
+                                </div>
+                            <?php endif ?>
+                            
                         </div>
                     </div>
                 </div>

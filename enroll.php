@@ -20,5 +20,14 @@ $student_id = $student['id'];
 $course_obj = new Courses();
 $course = $course_obj->fetch_course($course_id);
 
-$course_enrollment = $course_obj->enroll_course($course_id,$student_id);
+$check_enrollment = $course_obj->check_course_enrollment($course_id,$student_id);
+
+set_flash('response', displayWarning('You have enrolled for this course before'));
+if (! $check_enrollment) {
+	$course_enrollment = $course_obj->enroll_course($course_id,$student_id);
+	set_flash('response', displayWarning('Course enrolled successfully!'));
+}
+
+header('location: course-details?course='.$course_id);
+
 ?>

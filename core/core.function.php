@@ -26,6 +26,17 @@
 		return $files_d;
 	}
 
+	function set_flash($title,$description){
+		$_SESSION[$title] = $description;
+	}
+
+	function display_flash($title){
+		if (isset($_SESSION[$title])) {
+			echo $_SESSION[$title];
+			unset($_SESSION[$title]);
+		}
+	}
+
 	function format_date($date){
 		return date('M d, Y', strtotime($date));
 	}

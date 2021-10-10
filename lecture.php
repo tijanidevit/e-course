@@ -1,3 +1,36 @@
+<?php 
+session_start();    
+if (!isset($_SESSION['ecour_student'])) {
+  header('location: ./');
+  exit();
+}
+    
+if (!isset($_GET['course'])) {
+  header('location: courses');
+  exit();
+}
+
+$student = $_SESSION['ecour_student'];
+$student_id = $student['id'];
+$material_id = $_GET['id'];
+
+include_once 'core/courses.class.php';
+include_once 'core/core.function.php';
+
+$course_obj = new Courses();
+
+$course = $course_obj->fetch_course($course_id);
+$course_sections = $course_obj->fetch_course_sections($course_id);
+$course_enrollments_num = $course_obj->course_enrollments_num($course_id);
+
+$check_enrollment = $course_obj->check_course_enrollment($course_id,$student_id);
+
+$notFound = false;
+if (empty($course)) {
+    $notFound = true;
+}
+
+?>
 <!DOCTYPE html>
 <html lang="zxx">
 
