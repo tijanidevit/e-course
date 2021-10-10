@@ -13,7 +13,7 @@ if (isset($_POST['email'])) {
 	if ($student_obj->check_email_existence($email)) {
 		if ($student_obj->login($email,$password)) {
 			$student = $student_obj->fetch_student($email);
-			$session->create_session('gogi_student',$student);
+			$session->create_session('ecour_student',$student);
 			echo 1;
 		}
 		else{

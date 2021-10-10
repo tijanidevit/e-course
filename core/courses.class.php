@@ -76,7 +76,9 @@
         }
 
         function fetch_course_material($id){
-            return DB::fetch("SELECT * FROM course_materials WHERE id = ?",[$id]);
+            return DB::fetch("SELECT *,course_materials.created_at FROM course_materials
+            JOIN sections ON course_materials.section_id = sections.id
+            WHERE course_materials.id = ?",[$id]);
         }
 
 

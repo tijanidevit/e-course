@@ -1,3 +1,10 @@
+<?php 
+session_start();    
+if (isset($_SESSION['ecour_student'])) {
+  header('location: account');
+  exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="zxx">
 
@@ -46,7 +53,8 @@
                     <div class="login-form">
 
                         <div class="login-body">
-                            <form class="form-wrap" method="POST" action="./account">
+                            <form class="form-wrap" method="POST" id="loginForm">
+                                <div id="result"></div>
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <div class="form-group">
@@ -57,7 +65,7 @@
                                     <div class="col-lg-12">
                                         <div class="form-group">
                                             <label for="pwd">Password</label>
-                                            <input id="pwd" name="pwd" type="password" placeholder="Password">
+                                            <input id="pwd" name="password" type="password" placeholder="Password">
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-6 col-6">
@@ -69,7 +77,16 @@
 
                                     <div class="col-lg-12">
                                         <div class="form-group">
-                                            <button class="btn v1" type="submit">Log In</button>
+                                            <button class="btn v1" type="submit">
+                                                <span class="spinner" id="spinner" style="display: none;">
+                                                    <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                                                    <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                                                    <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                                                </span>
+                                                <span class="btnText">
+                                                    Login
+                                                </span>
+                                            </button>
                                         </div>
                                     </div>
 
@@ -96,3 +113,33 @@
 </body>
 
 </html>
+
+<script>
+    
+    $('#registerForm').submit(function(e){
+        e.preventDefault();
+        $.ajax({
+            url:'ajax/login.php',
+            type: 'POST',
+            data : $(this).serialize(),
+            cache: false,
+            beforeSend: function() {
+                $('#spinner').show();
+                $('#result').hide();
+                $('#btnText').hide();
+            },
+            success: function(data){
+                if (data == 1) {
+                    location.href = 'account';
+                }
+                else{
+                    $('#result').html(data);
+                    $('#result').fadeIn();
+                    $('#spinner').hide();
+                    $('#btnText').show();
+                }
+            }
+        })
+    })
+
+</script>

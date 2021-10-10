@@ -18,6 +18,7 @@
         function update_student($fullname,$gender,$picture,$email,$id){
             return DB::execute("UPDATE students SET fullname =?, gender =?, picture =?, email =?, password =? WHERE id = ? ", [$fullname,$gender,$picture,$email,$id]);
         }
+        
         function update_password($password,$id){
             return DB::execute("UPDATE students SET password =? WHERE id = ? ", [$password,$id]);
         }
