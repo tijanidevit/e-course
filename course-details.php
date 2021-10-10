@@ -14,10 +14,13 @@ $student = $_SESSION['ecour_student'];
 $course_id = $_GET['course'];
 
 include_once 'core/courses.class.php';
+include_once 'core/core.function.php';
 
 $course_obj = new Courses();
 
 $course = $course_obj->fetch_course($course_id);
+$course_sections = $course_obj->fetch_course_sections($course_id);
+$course_enrollments_num = $course_obj->course_enrollments_num($course_id);
 
 $notFound = false;
 if (empty($course)) {
@@ -78,12 +81,12 @@ if (empty($course)) {
                         <div class="col-lg-8">
                             <div class="course-details">
                                 <div class="course-details-img">
-                                    <img src="assets/img/course/single-course-1.jpg" alt="Image">
+                                    <img src="uploads/courses/<?php echo $course['image'] ?>" alt="Image">
                                 </div>
                                 <ul class="course-details-meta">
-                                    <li><i class="las la-clock"></i>4 Hours</li>
-                                    <li><i class="las la-graduation-cap"></i>45 Students</li>
-                                    <li><i class="lar la-calendar"></i>26th Jun,2021</li>
+                                    <li><i class="las la-clock"></i><?php echo $course['duration'] ?></li>
+                                    <li><i class="las la-graduation-cap"></i><?php echo $course_enrollments_num ?> Students</li>
+                                    <li><i class="lar la-calendar"></i><?php echo format_date($course['created_at']) ?></li>
                                 </ul>
                                 <ul class="nav nav-tabs course-tablist" role="tablist">
                                     <li class="nav-item">
@@ -99,133 +102,43 @@ if (empty($course)) {
                                 </ul>
                                 <div class="tab-content course-tab-content">
                                     <div class="tab-pane fade show active" id="tab_1" role="tabpanel">
-                                        <h5 class="mt-0">Students Do Not Learn Much Just Sitting in Classes Listening to Teachers Memorizing Prepackaged Assignments.</h5>
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.Excepteur sint occaecat cupidatat non proident in culpa qui officia deserunt mollit anim id est laborum. Curabitur pretium tincidunt lacus. Nulla gravida orci a odio.</p>
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation .</p>
-                                        <h5>What You Will Learn?</h5>
-                                        <ul class="course-details-list">
-                                            <li>Lorem ipsum dolor sit amet, consectetur adipisicing elitdunt.</li>
-                                            <li>Excepteur sint occaecat cupidatat non proident, sunt in culpa officia deserunt.</li>
-                                            <li>Duis aute irure dolor in reprehenderit in voluptate velit.</li>
-                                            <li>Duis ac tellus et risus vulputate vehicula Donec lobortis risus a elit.</li>
-                                            <li>Nulla gravida orci a odio nullam varius turpis et commodo pharetra.</li>
-                                        </ul>
-                                        <h5 class="course-details-title">Requirements</h5>
-                                        <ul class="course-details-list">
-                                            <li>Lorem ipsum dolor sit amet, consectetur adipisicing elitdunt.</li>
-                                            <li>Excepteur sint occaecat cupidatat non proident, sunt in culpa officia deserunt.</li>
-                                            <li>Duis aute irure dolor in reprehenderit in voluptate velit.</li>
-                                            <li>Duis ac tellus et risus vulputate vehicula Donec lobortis risus a elit.</li>
-                                            <li>Nulla gravida orci a odio nullam varius turpis et commodo pharetra.</li>
-                                        </ul>
+                                        <?php echo $course['description'] ?>
                                     </div>
                                     <div class="tab-pane fade" id="tab_2" role="tabpanel">
                                         <div class="accordion" id="accordionExample">
-                                            <div class="accordion-item">
-                                                <h2 class="accordion-header" id="headingOne">
-                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                                                        Internation Business
-                                                    </button>
-                                                </h2>
-                                                <div id="collapseOne" class="accordion-collapse collapse " aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                                                    <div class="accordion-body  lecture-accordion">
-                                                        <div class="lecture-item">
-                                                            <div class="lecture-name">
-                                                                <p><i class="las la-file-alt"></i>Lecture 01</p>
-                                                            </div>
-                                                            <div class="lecture-time">
-                                                                <span>20 min</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="lecture-item">
-                                                            <div class="lecture-name">
-                                                                <p><i class="las la-file-alt"></i>Lecture 02</p>
-                                                            </div>
-                                                            <div class="lecture-time">
-                                                                <span>30 min</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="lecture-item">
-                                                            <div class="lecture-name">
-                                                                <p><i class="las la-file-alt"></i>Lecture 03</p>
-                                                            </div>
-                                                            <div class="lecture-time">
-                                                                <span>35 min</span>
-                                                            </div>
+
+                                            <!-- https://www.youtube.com/watch?v=FCMxA3m_Imc
+                                            https://www.youtube.com/watch?v=NArVyt8t-z4
+                                            https://www.youtube.com/watch?v=A37-3lflh8I
+                                            https://www.youtube.com/watch?v=9QIFXyBYJQY -->
+
+
+                                            <?php foreach ($course_sections as $section): ?>
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header" id="headingOne">
+                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<?php echo $section['id'] ?>" aria-expanded="false" aria-controls="collapse<?php echo $section['id'] ?>">
+                                                            <?php echo $section['section'] ?>
+                                                        </button>
+                                                    </h2>
+                                                    <div id="collapse<?php echo $section['id'] ?>" class="accordion-collapse collapse " aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                                        <div class="accordion-body  lecture-accordion">
+                                                            <?php $section_materials = $course_obj->fetch_section_materials($section['id']); foreach ($section_materials as $material): ?>
+
+                                                                <div class="lecture-item">
+                                                                    <div class="lecture-name">
+                                                                        <p><i class="las la-file-alt"></i><?php echo $material['title'] ?></p>
+                                                                    </div>
+                                                                    <div class="lecture-time">
+                                                                        <span>20 min</span>
+                                                                    </div>
+                                                                </div>
+
+                                                            <?php endforeach ?>
+                                                                                                                        
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="accordion-item">
-                                                <h2 class="accordion-header" id="headingTwo">
-                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                                        Financial Accounting
-                                                    </button>
-                                                </h2>
-                                                <div id="collapseTwo" class="accordion-collapse collapse " aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-                                                    <div class="accordion-body  lecture-accordion">
-                                                        <div class="lecture-item">
-                                                            <div class="lecture-name">
-                                                                <p><i class="las la-file-alt"></i>Lecture 01</p>
-                                                            </div>
-                                                            <div class="lecture-time">
-                                                                <span>20 min</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="lecture-item">
-                                                            <div class="lecture-name">
-                                                                <p><i class="las la-file-alt"></i>Lecture 02</p>
-                                                            </div>
-                                                            <div class="lecture-time">
-                                                                <span>30 min</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="lecture-item">
-                                                            <div class="lecture-name">
-                                                                <p><i class="las la-file-alt"></i>Lecture 03</p>
-                                                            </div>
-                                                            <div class="lecture-time">
-                                                                <span>35 min</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="accordion-item">
-                                                <h2 class="accordion-header" id="headingThree">
-                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                                        Business Communication
-                                                    </button>
-                                                </h2>
-                                                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
-                                                    <div class="accordion-body  lecture-accordion">
-                                                        <div class="lecture-item">
-                                                            <div class="lecture-name">
-                                                                <p><i class="las la-file-alt"></i>Lecture 01</p>
-                                                            </div>
-                                                            <div class="lecture-time">
-                                                                <span>20 min</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="lecture-item">
-                                                            <div class="lecture-name">
-                                                                <p><i class="las la-file-alt"></i>Lecture 02</p>
-                                                            </div>
-                                                            <div class="lecture-time">
-                                                                <span>30 min</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="lecture-item">
-                                                            <div class="lecture-name">
-                                                                <p><i class="las la-file-alt"></i>Lecture 03</p>
-                                                            </div>
-                                                            <div class="lecture-time">
-                                                                <span>35 min</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <?php endforeach ?>
                                             <div class="accordion-item">
                                                 <h2 class="accordion-header" id="headingThree">
                                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
@@ -257,24 +170,24 @@ if (empty($course)) {
                                 <ul>
                                     <li>
                                         <p><i class="las la-user-graduate"></i>Students</p>
-                                        <p>45</p>
+                                        <p><?php echo $course_enrollments_num ?></p>
                                     </li>
                                     <li>
                                         <p><i class="las la-file-alt"></i>Tutor</p>
-                                        <p>Adewale Abati</p>
+                                        <p><?php echo $course['fullname'] ?></p>
                                     </li>
                                     <li>
                                         <p><i class="las la-clock"></i>Duration</p>
-                                        <p>45</p>
+                                        <p><?php echo $course['duration'] ?></p>
                                     </li>
                                     <li>
                                         <p><i class="las la-check-square"></i>Assesment</p>
-                                        <p>45</p>
+                                        <p>1</p>
                                     </li>
                                 </ul>
                             </div>
                             <div class="course-enroll-widget sidebar-box">
-                                <a href="enroll" class="btn v3">Enroll</a>
+                                <a href="enroll?course=<?php echo $course_id ?>" class="btn v3">Enroll</a>
                             </div>
                         </div>
                     </div>
@@ -282,7 +195,7 @@ if (empty($course)) {
             </section>
 
 
-            <section class="related-course pb-70">
+            <!-- <section class="related-course pb-70">
                 <div class="container">
                     <div class="row">
                         <div class="col-md-12">
@@ -366,7 +279,7 @@ if (empty($course)) {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section> -->
             
         <?php endif ?>
         

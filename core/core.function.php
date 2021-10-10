@@ -1,6 +1,5 @@
 <?php
-        use PHPMailer\PHPMailer\PHPMailer;
-        use PHPMailer\PHPMailer\SMTP;
+
 	function upload_file($file,$path)
 	{
 		$file_name = rand(1000,9999).'-'.$file['name'];
@@ -28,7 +27,7 @@
 	}
 
 	function format_date($date){
-		return date('F d, Y h:mA', strtotime($date));
+		return date('M d, Y', strtotime($date));
 	}
 	function redirect($link){
 		header("location:".$link);
